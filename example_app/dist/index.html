@@ -9,6 +9,20 @@
         document.querySelector('h1').innerHTML = 'example_app works!'
         // Create a "messages" collection
         const chat = horizon("messages");
+        let chats = [];
+        // Query chats with `.order`, which by default is in ascending order
+        chat.order("datetime").watch().subscribe(
+          // Returns the entire array
+          (newChats) => {
+            // Here we replace the old value of `chats` with the new
+            //  array. Frameworks such as React will re-render based
+            //  on the new values inserted into the array.
+            chats = newChats;
+            console.log('(watch) chats:', chats);
+          },
+          (err) => {
+            console.log(err);
+          })
         // Remove previous entries
         chat.remove({id: 1}).subscribe((id) => {
           console.log('deleted', id);

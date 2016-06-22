@@ -7,6 +7,38 @@
       var horizon = Horizon();
       horizon.onReady(function() {
         document.querySelector('h1').innerHTML = 'example_app works!'
+        // Create a "messages" collection
+        const chat = horizon("messages");
+        // Remove previous entries
+        chat.remove({id: 1}).subscribe((id) => {
+          console.log('deleted', id);
+          // Store a message
+          let message = {
+            id: 1,
+            text: "What a beautiful horizon!",
+            datetime: new Date(),
+            author: "@dalanmiller"
+          };
+          chat.store(message).subscribe(() => {
+            // List messages in console
+            chat.fetch().subscribe(
+              (items) => {
+                items.forEach((item) => {
+                  // Each result from the chat collection
+                  //  will pass through this function
+                  console.log(item);
+                })
+              },
+              // If an error occurs, this function
+              //  will execute with the `err` message
+              (err) => {
+                console.log(err);
+              });
+          });
+        });
+        // These two queries are equivalent and will remove the document with id: 1
+        //chat.remove(1).subscribe((id) => {console.log(id)});
+        //chat.removeAll([1]);
       });
       horizon.connect();
     </script>
